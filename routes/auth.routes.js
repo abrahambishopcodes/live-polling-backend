@@ -7,13 +7,18 @@ AuthRouter.get("/google", passport.authenticate("google", {
 }))
 
 AuthRouter.get("/google/callback", passport.authenticate("google", {
-    scope: ["profile", "email"]
+    failureRedirect: "/api/auth/google-failure",
+    failureMessage: true,
 }), (req, res) => {
     if (!req.user) {
         return res.status(400).send("Authentication failed.")
     }
 
     res.status(200).json(req.user)
+})
+
+AuthRouter.get('/google-failure', (req, res) => {
+    res.send("Failed to authenticate ...")
 })
 
 module.exports = AuthRouter;
