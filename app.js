@@ -11,10 +11,11 @@ require('./utils/passport')
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth.routes');
+const pollRouter = require('./routes/poll.routes');
 
 const app = express();
 
-
+app.set("trust proxy", true)
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -35,6 +36,7 @@ app.use(passport.session())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/poll', pollRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -49,7 +51,10 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+    message: "Unexpected error occured",
+    error: err,
+  })
 });
 
 module.exports = app;
